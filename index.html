@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Raad het Nummer</title>
+  <meta name="description" content="Herken jij het nummer aan een fractie van een seconde? Kies een categorie en speel zo vaak als je wilt.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <button class="icon-btn" id="btn-home" title="Categorieën" aria-label="Terug naar categorieën">☰</button>
+    <h1 class="logo" id="logo">Raad het <span>Nummer</span></h1>
+    <div class="topbar-right">
+      <button class="icon-btn" id="btn-stats" title="Statistieken" aria-label="Statistieken">📊</button>
+      <button class="icon-btn" id="btn-help" title="Uitleg" aria-label="Uitleg">?</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Categorie-keuze -->
+    <section id="screen-home" class="screen">
+      <p class="intro">Hoe snel herken jij een nummer? Je hoort eerst <strong>0,1 seconde</strong>. Kies een categorie en speel zo vaak als je wilt.</p>
+      <div class="cat-grid" id="cat-grid"></div>
+    </section>
+
+    <!-- Spel -->
+    <section id="screen-game" class="screen hidden">
+      <div class="game-head">
+        <span class="badge" id="game-cat"></span>
+        <span class="streak" id="game-streak" title="Reeks in deze categorie"></span>
+      </div>
+
+      <ol class="guesses" id="guesses"></ol>
+
+      <div class="player" id="player">
+        <div class="bar" id="bar">
+          <div class="bar-unlocked" id="bar-unlocked"></div>
+          <div class="bar-progress" id="bar-progress"></div>
+          <div class="bar-ticks" id="bar-ticks"></div>
+        </div>
+        <div class="bar-labels"><span id="time-now">0:00</span><span id="time-end">0:16</span></div>
+        <button class="play-btn" id="btn-play" aria-label="Afspelen" disabled>
+          <span class="spinner" id="spinner"></span>
+          <svg id="icon-play" viewBox="0 0 24 24" width="34" height="34"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+          <svg id="icon-stop" class="hidden" viewBox="0 0 24 24" width="30" height="30"><path fill="currentColor" d="M6 6h12v12H6z"/></svg>
+        </button>
+        <p class="status" id="status">Nummer laden…</p>
+      </div>
+
+      <div class="guess-area" id="guess-area">
+        <div class="search">
+          <input id="guess-input" type="text" autocomplete="off" spellcheck="false"
+                 placeholder="Zoek op titel of artiest…" aria-label="Je gok">
+          <ul class="suggestions hidden" id="suggestions" role="listbox"></ul>
+        </div>
+        <div class="actions">
+          <button class="btn ghost" id="btn-skip">Overslaan</button>
+          <button class="btn primary" id="btn-submit">Raden</button>
+        </div>
+      </div>
+
+      <div class="result hidden" id="result">
+        <h2 id="result-title"></h2>
+        <div class="song-card">
+          <img id="result-art" alt="">
+          <div>
+            <div class="song-title" id="result-song"></div>
+            <div class="song-artist" id="result-artist"></div>
+            <div class="links">
+              <a id="link-spotify" target="_blank" rel="noopener">Spotify</a>
+              <a id="link-apple" target="_blank" rel="noopener">Apple Music</a>
+              <a id="link-youtube" target="_blank" rel="noopener">YouTube</a>
+            </div>
+          </div>
+        </div>
+        <div class="squares" id="result-squares"></div>
+        <div class="actions">
+          <button class="btn ghost" id="btn-share">Deel resultaat</button>
+          <button class="btn primary" id="btn-next">Volgende nummer ▶</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Uitleg -->
+  <dialog id="dlg-help">
+    <h2>Hoe werkt het?</h2>
+    <ol class="rules">
+      <li>🎧 Druk op <strong>play</strong> en luister naar het begin van het fragment.</li>
+      <li>🔎 Typ een titel of artiest en kies het juiste nummer uit de lijst.</li>
+      <li>⏭️ Fout of overgeslagen? Dan hoor je een langer stuk: 0,1s → 0,5s → 2s → 4s → 8s → 16s.</li>
+      <li>🟨 Goede artiest maar verkeerd nummer telt als fout, maar je ziet dat je in de buurt zat.</li>
+      <li>🏆 Je hebt 6 pogingen. Daarna gewoon door naar het volgende nummer, zo vaak als je wilt.</li>
+    </ol>
+    <p class="muted">Tip: spatiebalk = afspelen. Fragmenten komen van de iTunes-preview-API.</p>
+    <form method="dialog"><button class="btn primary">Spelen!</button></form>
+  </dialog>
+
+  <!-- Statistieken -->
+  <dialog id="dlg-stats">
+    <h2>Statistieken</h2>
+    <select id="stats-cat" aria-label="Categorie"></select>
+    <div class="stat-row" id="stat-row"></div>
+    <h3>Geraden in poging</h3>
+    <div class="dist" id="dist"></div>
+    <form method="dialog" class="dlg-actions">
+      <button class="btn ghost" type="button" id="btn-reset">Reset</button>
+      <button class="btn primary">Sluiten</button>
+    </form>
+  </dialog>
+
+  <div class="toast hidden" id="toast"></div>
+
+  <script src="js/songs.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
